@@ -47,11 +47,13 @@ app/src/main/java/com/miinfc/
 
 ## Estado atual
 
-O app possui dois pipelines de escrita independentes:
+O pipeline Amiibo separa normalização, preparação criptográfica, planejamento,
+escrita principal, verificação, finalização e verificação final. Ele nunca copia
+as páginas físicas de UID (0–2) de um dump e agenda lock bytes somente depois da
+verificação dos dados principais.
 
-- `data/nfc/amiibo`: valida NTAG215 e usa páginas raw, sem NDEF, UID ou locks.
-- `data/nfc/ndef`: cria mensagens de texto/URI/contato, valida capacidade,
-  escreve com `Ndef` ou `NdefFormatable` e relê para verificar.
-
-Uma NTAG213/216 pode ser usada no modo NDEF, mas nunca no modo Amiibo. A
-NTAG215 pode ser usada em ambos, conforme o modo escolhido pelo usuário.
+O motor criptográfico proprietário não está incluído. A implementação padrão é
+`UnavailableAmiiboCryptoEngine` e falha com `CryptoNotImplemented`; portanto, o
+app não declara uma gravação como compatível com Nintendo Switch até que um
+motor auditado, usando uma chave local fornecida pelo usuário, produza e valide
+a imagem completa para o UID físico da tag.
